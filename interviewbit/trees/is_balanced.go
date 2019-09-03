@@ -25,12 +25,12 @@ func getNextParent(root *TreeNode) (*TreeNode, string) {
 	return nil, ""
 }
 
-func initTree() *TreeNode {
+func initTree(inputSlice []int) *TreeNode {
 	root := &TreeNode{
-		data: 1,
+		data: inputSlice[0],
 	}
 	lastParent := root
-	for _, i := range []int{2, 3, 4, 5, 6, 7} {
+	for _, i := range inputSlice[1:] {
 		nextParent, side := getNextParent(lastParent)
 		if side == "left" {
 			nextParent.left = &TreeNode{
@@ -64,7 +64,37 @@ func inOrder(root *TreeNode) {
 
 }
 
+func max(a int, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+
+func height(root *TreeNode) int {
+	if root == nil {
+		return 0
+	}
+	if root.left == nil && root.right == nil {
+		return 1
+	}
+	return max(height(root.left), height(root.right)) + 1
+}
+
+func isBalanced(root *TreeNode) bool {
+	if root == nil {
+		return true
+	}
+	imbalance := height(root.left) - height(root.right)
+	fmt.Printf("Imbalance at node %d: %d\n", root.data, imbalance)
+	if imbalance > 1 || imbalance < -1 {
+		return false
+	}
+	return isBalanced(root.left) && isBalanced(root.right)
+}
+
 func main() {
 	t := initTree()
 	inOrder(t)
+	fmt.Println(isBalanced(t))
 }
